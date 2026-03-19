@@ -9,7 +9,7 @@ OBJ_DEBUG	=	$(SRC:%.cpp=./obj/debug/%.o)
 OBJ_RELEASE	=	$(SRC:%.cpp=./obj/release/%.o)
 
 # Compilation parameters
-COMPILER	=	clang++
+COMPILER	=	g++
 COMPILER_FLAGS_DEBUG	=	-std=c++20 -g -Wall -Wextra -I./src
 COMPILER_FLAGS_RELEASE	=	-std=c++20 -O3 -march=native -flto=auto -I./src
 MAKEFLAGS	+=	-j$(shell nproc) --silent --no-print-directory
