@@ -1,6 +1,9 @@
 # Main binary
 gameboy
 
+# Example ROMs
+roms/
+
 # Prerequisites
 *.d
 
