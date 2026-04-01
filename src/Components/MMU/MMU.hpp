@@ -1,7 +1,7 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
-#include <vector>
 
 namespace gmb
 {
@@ -9,12 +9,13 @@ namespace gmb
 
     class MMU final {
         public:
-            MMU();
+            explicit MMU();
             ~MMU();
 
             std::uint8_t& operator[](std::uint16_t address);
+            const std::uint8_t& operator[](std::uint16_t address) const;
 
         private:
-            std::vector<std::uint8_t> memory_;
+            std::array<std::uint8_t, MEMORY_SIZE> memory_{0};
     };
 }

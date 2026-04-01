@@ -1,7 +1,10 @@
 # Source files
 MAIN	=	src/main.cpp\
 
-SRCS	=
+SRCS	=	src/Core/Gameboy.cpp\
+			src/Components/MMU/MMU.cpp\
+			src/Components/CPU/CPU.cpp\
+			src/Components/CPU/CPUInstructions.cpp
 
 SRC	= $(MAIN) $(SRCS)
 
@@ -10,8 +13,8 @@ OBJ_RELEASE	=	$(SRC:%.cpp=./obj/release/%.o)
 
 # Compilation parameters
 COMPILER	=	g++
-COMPILER_FLAGS_DEBUG	=	-std=c++20 -g -Wall -Wextra -I./src
-COMPILER_FLAGS_RELEASE	=	-std=c++20 -O3 -march=native -flto=auto -I./src
+COMPILER_FLAGS_DEBUG	=	-std=c++23 -g -Wall -Wextra -I./src
+COMPILER_FLAGS_RELEASE	=	-std=c++23 -O3 -march=native -flto=auto -I./src
 MAKEFLAGS	+=	-j$(shell nproc) --silent --no-print-directory
 
 N_FILES	:=	$(words $(SRC))
