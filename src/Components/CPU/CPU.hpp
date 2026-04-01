@@ -37,13 +37,6 @@ namespace gmb
         std::uint16_t PC;
     };
 
-    struct Flags {
-        bool Z;
-        bool N;
-        bool H;
-        bool C;
-    };
-
     class CPU final {
         public:
             explicit CPU(MMU& mmu);
@@ -54,14 +47,19 @@ namespace gmb
         private:
             void execute(std::uint8_t opcode);
             void executeCB(std::uint8_t opcode);
+            void setFlagZ(bool val);
+            void setFlagN(bool val);
+            void setFlagH(bool val);
+            void setFlagC(bool val);
+            std::uint8_t& getRegisterR8(std::uint8_t opcode);
 
             void noop(std::uint8_t opcode);
-            void ld_r16_imm16(std::uint8_t opcode);
-            void ld_r16mem_a(std::uint8_t opcode);
-            void ld_a_r16mem(std::uint8_t opcode);
 
-            Registers registers_{.AF = 0, .BC = 0, .DE = 0, .HL = 0, .SP = 0, .PC = 0};
-            Flags flags_{.Z = 0, .N = 0, .H = 0, .C = 0};
+            void jp_imm16(std::uint8_t opcode);
+
+            void inc_r8(std::uint8_t opcode);
+
+            Registers registers_{.AF = 0x01B0, .BC = 0x0013, .DE = 0x00D8, .HL = 0x014D, .SP = 0xFFFE, .PC = 0x0100};
             bool cb_instruction_{false};
             std::size_t cycles_{0};
             MMU& mmu_;
