@@ -1,4 +1,6 @@
-#include "exceptions/i_exception.hpp"
+#pragma once
+
+#include "Exceptions/IException.hpp"
 #include <string>
 
 namespace gmb
@@ -12,7 +14,7 @@ namespace gmb
             }
 
         protected:
-            AException(std::string message);
+            explicit AException(const std::string& message) : message_(message) {}
 
         private:
             std::string message_;
