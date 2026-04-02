@@ -6,6 +6,13 @@ void gmb::CPU::noop(std::uint8_t opcode) {
     (void) opcode;
 }
 
+void gmb::CPU::cpl(std::uint8_t opcode) {
+    (void) opcode;
+    registers_.A = ~registers_.A;
+    setFlagN(true);
+    setFlagH(true);
+}
+
 
 void gmb::CPU::jp_imm16(std::uint8_t opcode) {
     (void) opcode;

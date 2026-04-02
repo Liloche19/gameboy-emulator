@@ -62,6 +62,7 @@ namespace gmb
             std::uint16_t& getRegisterR16(std::uint8_t opcode);
 
             void noop(std::uint8_t opcode);
+            void cpl(std::uint8_t opcode);
 
             void jp_imm16(std::uint8_t opcode);
             void jr_imm8(std::uint8_t opcode);

@@ -18,6 +18,7 @@ namespace gmb
     // misc instructions
     constexpr Instruction NOOP = {"NOOP", 4, 1, 0b00000000, 0b11111111};
     constexpr Instruction CB = {"CB", 4, 1, 0b11001011, 0b11111111};
+    constexpr Instruction CPL = {"CPL", 4, 1, 0b00101111, 0b11111111};
 
     // jump instructions
     constexpr Instruction JP_IMM16 = {"JP IMM16", 16, 3, 0b11000011, 0b11111111};
