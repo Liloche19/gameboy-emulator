@@ -13,6 +13,8 @@ namespace gmb
         std::uint8_t mask_arg;
     };
 
+    constexpr std::size_t ADDRESS_ACCESS_CYCLE = 4;
+
     // misc instructions
     constexpr Instruction NOOP = {"NOOP", 4, 1, 0b00000000, 0b11111111};
     constexpr Instruction CB = {"CB", 4, 1, 0b11001011, 0b11111111};

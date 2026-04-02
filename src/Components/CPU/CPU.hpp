@@ -52,11 +52,14 @@ namespace gmb
             void setFlagH(bool val);
             void setFlagC(bool val);
             std::uint8_t& getRegisterR8(std::uint8_t opcode);
+            std::uint16_t& getRegisterR16(std::uint8_t opcode);
 
             void noop(std::uint8_t opcode);
 
+            void ld_r16_imm16(std::uint8_t opcode);
             void jp_imm16(std::uint8_t opcode);
 
+            void ld_r8_r8(std::uint8_t opcode);
             void inc_r8(std::uint8_t opcode);
 
             Registers registers_{.AF = 0x01B0, .BC = 0x0013, .DE = 0x00D8, .HL = 0x014D, .SP = 0xFFFE, .PC = 0x0100};

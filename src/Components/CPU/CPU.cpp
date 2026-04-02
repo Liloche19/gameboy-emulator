@@ -5,11 +5,14 @@
 #include "Instructions/Instructions.hpp"
 #include <algorithm>
 #include <cstdint>
+#include <print>
 
 gmb::CPU::CPU(gmb::MMU& mmu) : mmu_(mmu) {
     instructions_.push_back({NOOP, [this](std::uint8_t opcode) {noop(opcode);}});
     instructions_.push_back({JP_IMM16, [this](std::uint8_t opcode) {jp_imm16(opcode);}});
     instructions_.push_back({INC_R8, [this](std::uint8_t opcode) {inc_r8(opcode);}});
+    instructions_.push_back({LD_R8_R8, [this](std::uint8_t opcode) {ld_r8_r8(opcode);}});
+    instructions_.push_back({LD_R16_IMM16, [this](std::uint8_t opcode) {ld_r16_imm16(opcode);}});
 }
 
 gmb::CPU::~CPU() {
@@ -17,6 +20,7 @@ gmb::CPU::~CPU() {
 
 void gmb::CPU::step() {
     std::uint8_t opcode = mmu_[registers_.PC];
+    //std::println("Executing {:#02X} at {:#04X}...", opcode, registers_.PC);
     execute(opcode);
     return;
 }
@@ -57,8 +61,18 @@ std::uint8_t& gmb::CPU::getRegisterR8(std::uint8_t reg) {
         case 0b011: return registers_.E;
         case 0b100: return registers_.H;
         case 0b101: return registers_.L;
-        case 0b110: cycles_ += (12 - INC_R8.cycle); return mmu_[registers_.HL];
+        case 0b110: cycles_ += ADDRESS_ACCESS_CYCLE; return mmu_[registers_.HL];
         case 0b111: return registers_.A;
+        default: throw InvalidRegisterException(std::format("Could not find a 8 bit register for value {:#b}", reg));
+    }
+}
+
+std::uint16_t& gmb::CPU::getRegisterR16(std::uint8_t reg) {
+    switch (reg) {
+        case 0b00: return registers_.BC;
+        case 0b01: return registers_.DE;
+        case 0b10: return registers_.HL;
+        case 0b11: return registers_.SP;
         default: throw InvalidRegisterException(std::format("Could not find a 8 bit register for value {:#b}", reg));
     }
 }
