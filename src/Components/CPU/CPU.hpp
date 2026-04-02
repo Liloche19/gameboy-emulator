@@ -47,20 +47,33 @@ namespace gmb
         private:
             void execute(std::uint8_t opcode);
             void executeCB(std::uint8_t opcode);
+
             void setFlagZ(bool val);
             void setFlagN(bool val);
             void setFlagH(bool val);
             void setFlagC(bool val);
+
+            bool getFlagZ();
+            bool getFlagN();
+            bool getFlagH();
+            bool getFlagC();
+
             std::uint8_t& getRegisterR8(std::uint8_t opcode);
             std::uint16_t& getRegisterR16(std::uint8_t opcode);
 
             void noop(std::uint8_t opcode);
 
-            void ld_r16_imm16(std::uint8_t opcode);
             void jp_imm16(std::uint8_t opcode);
+            void jr_imm8(std::uint8_t opcode);
+
+            void ld_r16_imm16(std::uint8_t opcode);
 
             void ld_r8_r8(std::uint8_t opcode);
+            void ld_r8_imm8(std::uint8_t opcode);
+            void sub_a_r8(std::uint8_t opcode);
+            void sbc_a_r8(std::uint8_t opcode);
             void inc_r8(std::uint8_t opcode);
+            void dec_r8(std::uint8_t opcode);
 
             Registers registers_{.AF = 0x01B0, .BC = 0x0013, .DE = 0x00D8, .HL = 0x014D, .SP = 0xFFFE, .PC = 0x0100};
             bool cb_instruction_{false};

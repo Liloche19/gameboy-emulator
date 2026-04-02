@@ -11,8 +11,13 @@ gmb::CPU::CPU(gmb::MMU& mmu) : mmu_(mmu) {
     instructions_.push_back({NOOP, [this](std::uint8_t opcode) {noop(opcode);}});
     instructions_.push_back({JP_IMM16, [this](std::uint8_t opcode) {jp_imm16(opcode);}});
     instructions_.push_back({INC_R8, [this](std::uint8_t opcode) {inc_r8(opcode);}});
+    instructions_.push_back({DEC_R8, [this](std::uint8_t opcode) {dec_r8(opcode);}});
     instructions_.push_back({LD_R8_R8, [this](std::uint8_t opcode) {ld_r8_r8(opcode);}});
     instructions_.push_back({LD_R16_IMM16, [this](std::uint8_t opcode) {ld_r16_imm16(opcode);}});
+    instructions_.push_back({SUB_A_R8, [this](std::uint8_t opcode) {sub_a_r8(opcode);}});
+    instructions_.push_back({SBC_A_R8, [this](std::uint8_t opcode) {sbc_a_r8(opcode);}});
+    instructions_.push_back({LD_R8_IMM8, [this](std::uint8_t opcode) {ld_r8_imm8(opcode);}});
+    instructions_.push_back({JR_IMM8, [this](std::uint8_t opcode) {jr_imm8(opcode);}});
 }
 
 gmb::CPU::~CPU() {
@@ -20,7 +25,7 @@ gmb::CPU::~CPU() {
 
 void gmb::CPU::step() {
     std::uint8_t opcode = mmu_[registers_.PC];
-    //std::println("Executing {:#02X} at {:#04X}...", opcode, registers_.PC);
+    std::println("Executing {:#02X} at {:#04X}...", opcode, registers_.PC);
     execute(opcode);
     return;
 }
@@ -103,4 +108,20 @@ void gmb::CPU::setFlagC(bool val) {
         registers_.F |= 0b00010000;
     else
         registers_.F &= 0b11101111;
+}
+
+bool gmb::CPU::getFlagZ() {
+    return static_cast<bool>(registers_.F & 0b10000000);
+}
+
+bool gmb::CPU::getFlagN() {
+    return static_cast<bool>(registers_.F & 0b01000000);
+}
+
+bool gmb::CPU::getFlagH() {
+    return static_cast<bool>(registers_.F & 0b00100000);
+}
+
+bool gmb::CPU::getFlagC() {
+    return static_cast<bool>(registers_.F & 0b00010000);
 }

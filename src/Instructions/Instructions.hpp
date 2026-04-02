@@ -21,6 +21,7 @@ namespace gmb
 
     // jump instructions
     constexpr Instruction JP_IMM16 = {"JP IMM16", 16, 3, 0b11000011, 0b11111111};
+    constexpr Instruction JR_IMM8 = {"JR IMM8", 12, 2, 0b00011000, 0b11111111};
 
     // r16 instructions
     // ld instructions
@@ -38,6 +39,9 @@ namespace gmb
     // ld instructions
     constexpr Instruction LD_R8_IMM8 = {"LD R8 IMM8", 8, 1, 0b00000110, 0b11000111};
     constexpr Instruction LD_R8_R8 = {"LD R8 R8", 4, 1, 0b01000000, 0b11000000};
+    // arithmetic instructions
+    constexpr Instruction SUB_A_R8 = {"SUB A R8", 4, 1, 0b10010000, 0b11111000};
+    constexpr Instruction SBC_A_R8 = {"SBC A R8", 4, 1, 0b10011000, 0b11111000};
     // inc/dec instructions
     constexpr Instruction INC_R8 = {"INC R8", 4, 1, 0b00000100, 0b11000111};
     constexpr Instruction DEC_R8 = {"DEC R8", 4, 1, 0b00000101, 0b11000111};
