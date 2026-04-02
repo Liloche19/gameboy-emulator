@@ -71,10 +71,10 @@ void gmb::CPU::inc_r8(std::uint8_t opcode) {
     std::uint8_t register_code = (opcode ^ INC_R8.mask_op) >> 3;
     if (register_code == 0b110)
         cycles_ += ADDRESS_ACCESS_CYCLE;
-    std::uint8_t& reg = getRegisterR8(register_code);
+    MemByte reg = getRegisterR8(register_code);
     reg++;
     setFlagN(false);
-    setFlagH((((reg - 1) & 0x0F) + 1) > 0x0F);
+    setFlagH((((reg - static_cast<std::uint8_t>(1)) & 0x0F) + 1) > 0x0F);
     setFlagZ(reg == 0);
 }
 
@@ -82,9 +82,9 @@ void gmb::CPU::dec_r8(std::uint8_t opcode) {
     std::uint8_t register_code = (opcode ^ DEC_R8.mask_op) >> 3;
     if (register_code == 0b110)
         cycles_ += ADDRESS_ACCESS_CYCLE;
-    std::uint8_t& reg = getRegisterR8(register_code);
+    MemByte reg = getRegisterR8(register_code);
     reg--;
     setFlagN(true);
     setFlagZ(reg == 0);
-    setFlagH((((reg + 1) & 0x0F) - 1) < 0);
+    setFlagH((((reg + static_cast<std::uint8_t>(1)) & 0x0F) - 1) < 0);
 }

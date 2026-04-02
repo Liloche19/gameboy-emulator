@@ -1,7 +1,9 @@
 #pragma once
 
+#include "Data/TByte.hpp"
 #include <array>
 #include <cstdint>
+#include <string>
 
 namespace gmb
 {
@@ -12,8 +14,9 @@ namespace gmb
             explicit MMU();
             ~MMU();
 
-            std::uint8_t& operator[](std::uint16_t address);
-            const std::uint8_t& operator[](std::uint16_t address) const;
+            MemByte operator[](std::uint16_t address);
+
+            void loadGame(const std::string& filename);
 
         private:
             std::array<std::uint8_t, MEMORY_SIZE> memory_{0};

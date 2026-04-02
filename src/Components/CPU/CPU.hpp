@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Components/MMU/MMU.hpp"
+#include "Data/TByte.hpp"
 #include "Instructions/Instructions.hpp"
 #include <cstdint>
 #include <functional>
@@ -58,7 +59,7 @@ namespace gmb
             bool getFlagH();
             bool getFlagC();
 
-            std::uint8_t& getRegisterR8(std::uint8_t opcode);
+            MemByte getRegisterR8(std::uint8_t opcode);
             std::uint16_t& getRegisterR16(std::uint8_t opcode);
 
             void noop(std::uint8_t opcode);
