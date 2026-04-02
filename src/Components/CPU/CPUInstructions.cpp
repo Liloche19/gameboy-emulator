@@ -48,34 +48,43 @@ void gmb::CPU::ld_r8_imm8(std::uint8_t opcode) {
 }
 
 void gmb::CPU::sub_a_r8(std::uint8_t opcode) {
-    std::uint8_t reg = (opcode ^ SUB_A_R8.mask_op) & 0b00000111;
-    registers_.A = registers_.A - getRegisterR8(reg);
+    std::uint8_t reg_code = (opcode ^ SUB_A_R8.mask_op) & 0b00000111;
+    std::uint8_t reg = getRegisterR8(reg_code);
     setFlagN(true);
-    if (reg == 0b111) {
-        setFlagZ(true);
-        setFlagH(false);
-        setFlagC(false);
-    }
+    setFlagC(registers_.A < reg);
+    setFlagH((registers_.A & 0x0F) < (reg & 0x0F));
+    registers_.A -= reg;
+    setFlagZ(registers_.A == 0);
 }
 
 void gmb::CPU::sbc_a_r8(std::uint8_t opcode) {
-    std::uint8_t reg = (opcode ^ SBC_A_R8.mask_op) & 0b00000111;
-    registers_.A = registers_.A - getRegisterR8(reg) - (getFlagC() ? 1 : 0);
+    std::uint8_t reg = getRegisterR8((opcode ^ SBC_A_R8.mask_op) & 0b00000111);
+    std::uint8_t carry = getFlagC() ? 1 : 0;
     setFlagN(true);
+    setFlagH((registers_.A & 0x0F) < (static_cast<std::uint16_t>(reg & 0x0F) + carry));
+    setFlagC(registers_.A < (static_cast<std::uint16_t>(reg) + carry));
+    registers_.A -= reg + carry;
+    setFlagZ(registers_.A == 0);
 }
 
 void gmb::CPU::inc_r8(std::uint8_t opcode) {
     std::uint8_t register_code = (opcode ^ INC_R8.mask_op) >> 3;
     if (register_code == 0b110)
         cycles_ += ADDRESS_ACCESS_CYCLE;
-    getRegisterR8(register_code)++;
+    std::uint8_t& reg = getRegisterR8(register_code);
+    reg++;
     setFlagN(false);
+    setFlagH((((reg - 1) & 0x0F) + 1) > 0x0F);
+    setFlagZ(reg == 0);
 }
 
 void gmb::CPU::dec_r8(std::uint8_t opcode) {
     std::uint8_t register_code = (opcode ^ DEC_R8.mask_op) >> 3;
     if (register_code == 0b110)
         cycles_ += ADDRESS_ACCESS_CYCLE;
-    getRegisterR8(register_code)++;
+    std::uint8_t& reg = getRegisterR8(register_code);
+    reg--;
     setFlagN(true);
+    setFlagZ(reg == 0);
+    setFlagH((((reg + 1) & 0x0F) - 1) < 0);
 }
