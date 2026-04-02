@@ -6,6 +6,7 @@
 #include "Exceptions/Implementations/ReadFile.hpp"
 #include <fstream>
 #include <ios>
+#include <span>
 
 gmb::MMU::MMU() {
 }
@@ -26,6 +27,10 @@ void gmb::MMU::loadGame(const std::string& filename) {
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
     std::uint8_t* mem = &memory_[0];
-    if (!file.read((char*)mem, size))
+    if (!file.read(reinterpret_cast<char*>(mem), size))
         throw ReadFileException(std::format("Error reading {} file!", filename));
+}
+
+std::string gmb::MMU::getGameName() {
+    return std::string(reinterpret_cast<char*>(std::span(memory_).subspan(0x134, 0x143).data()));
 }

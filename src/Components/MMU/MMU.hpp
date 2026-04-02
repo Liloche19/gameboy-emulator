@@ -17,6 +17,7 @@ namespace gmb
             MemByte operator[](std::uint16_t address);
 
             void loadGame(const std::string& filename);
+            std::string getGameName();
 
         private:
             std::array<std::uint8_t, MEMORY_SIZE> memory_{0};
