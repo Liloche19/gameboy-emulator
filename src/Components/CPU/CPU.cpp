@@ -25,6 +25,7 @@ gmb::CPU::CPU(gmb::MMU& mmu) : mmu_(mmu) {
     instructions_.push_back({JR_COND_IMM8, [this](std::uint8_t opcode) {jr_cond_imm8(opcode);}});
     instructions_.push_back({LD_R16MEM_A, [this](std::uint8_t opcode) {ld_r16mem_a(opcode);}});
     instructions_.push_back({INC_R16, [this](std::uint8_t opcode) {inc_r16(opcode);}});
+    instructions_.push_back({CALL_IMM16, [this](std::uint8_t opcode) {call_imm16(opcode);}});
 }
 
 gmb::CPU::~CPU() {

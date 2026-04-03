@@ -17,7 +17,7 @@ void gmb::CPU::cpl(std::uint8_t opcode) {
 
 void gmb::CPU::jp_imm16(std::uint8_t opcode) {
     (void) opcode;
-    std::uint16_t address = (mmu_[registers_.PC + 1] << 8) | mmu_[registers_.PC + 2];
+    std::uint16_t address = (static_cast<std::uint16_t>(mmu_[registers_.PC + 2]) << 8) | mmu_[registers_.PC + 1];
     registers_.PC = address - JP_IMM16.size;
 }
 
@@ -43,7 +43,7 @@ void gmb::CPU::ld_r16mem_a(std::uint8_t opcode) {
 
 
 void gmb::CPU::ld_r16_imm16(std::uint8_t opcode) {
-    std::uint16_t val = (mmu_[registers_.PC + 1] << 8) | mmu_[registers_.PC + 2];
+    std::uint16_t val = (static_cast<std::uint16_t>(mmu_[registers_.PC + 2]) << 8) | mmu_[registers_.PC + 1];
     std::uint8_t reg = (opcode ^ LD_R16_IMM16.mask_op) >> 4;
     getRegisterR16(reg) = val;
 }
@@ -106,4 +106,15 @@ void gmb::CPU::dec_r8(std::uint8_t opcode) {
     setFlagN(true);
     setFlagZ(reg == 0);
     setFlagH((((reg + static_cast<std::uint8_t>(1)) & 0x0F) - 1) < 0);
+}
+
+void gmb::CPU::call_imm16(std::uint8_t opcode) {
+    (void) opcode;
+    std::uint16_t address = (static_cast<std::uint16_t>(mmu_[registers_.PC + 2]) << 8) | mmu_[registers_.PC + 1];
+    std::uint16_t next_pc = registers_.PC + CALL_IMM16.size;
+    registers_.SP--;
+    mmu_[registers_.SP] = static_cast<std::uint8_t>(next_pc & 0xFF);
+    registers_.SP--;
+    mmu_[registers_.SP] = static_cast<std::uint8_t>(next_pc >> 8);
+    registers_.PC = address;
 }
