@@ -32,7 +32,9 @@ gmb::CPU::~CPU() {
 
 void gmb::CPU::step() {
     std::uint8_t opcode = mmu_[registers_.PC];
-    std::println("Executing {:#02X} at {:#04X}...", opcode, registers_.PC);
+    if constexpr (debug_mode_enabled) {
+        std::println("Executing {:#02X} at {:#04X}...", opcode, registers_.PC);
+    }
     execute(opcode);
     return;
 }

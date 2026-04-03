@@ -13,7 +13,7 @@ OBJ_RELEASE	=	$(SRC:%.cpp=./obj/release/%.o)
 
 # Compilation parameters
 COMPILER	=	g++
-COMPILER_FLAGS_DEBUG	=	-std=c++23 -g -Wall -Wextra -I./src
+COMPILER_FLAGS_DEBUG	=	-std=c++23 -g -Wall -Wextra -I./src -D_DEV_MODE
 COMPILER_FLAGS_RELEASE	=	-std=c++23 -O3 -march=native -flto=auto -I./src
 MAKEFLAGS	+=	-j$(shell nproc) --silent --no-print-directory
 

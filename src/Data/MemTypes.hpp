@@ -2,6 +2,12 @@
 
 #include <cstdint>
 
+#ifdef _DEV_MODE
+    constexpr bool debug_mode_enabled = true;
+#else
+    constexpr bool debug_mode_enabled = false;
+#endif
+
 namespace gmb
 {
     struct RAMType {
