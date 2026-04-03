@@ -23,6 +23,7 @@ namespace gmb
     // jump instructions
     constexpr Instruction JP_IMM16 = {"JP IMM16", 16, 3, 0b11000011, 0b11111111};
     constexpr Instruction JR_IMM8 = {"JR IMM8", 12, 2, 0b00011000, 0b11111111};
+    constexpr Instruction JR_COND_IMM8 = {"JR COND IMM8", 8, 2, 0b00100000, 0b11100111};
 
     // r16 instructions
     // ld instructions

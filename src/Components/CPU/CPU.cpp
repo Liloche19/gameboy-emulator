@@ -4,6 +4,7 @@
 #include "Data/TByte.hpp"
 #include "Exceptions/Implementations/InvalidRegister.hpp"
 #include "Exceptions/Implementations/UnknownInstruction.hpp"
+#include "Exceptions/Implementations/InvalidCondition.hpp"
 #include "Instructions/Instructions.hpp"
 #include <algorithm>
 #include <cstdint>
@@ -21,6 +22,9 @@ gmb::CPU::CPU(gmb::MMU& mmu) : mmu_(mmu) {
     instructions_.push_back({LD_R8_IMM8, [this](std::uint8_t opcode) {ld_r8_imm8(opcode);}});
     instructions_.push_back({JR_IMM8, [this](std::uint8_t opcode) {jr_imm8(opcode);}});
     instructions_.push_back({CPL, [this](std::uint8_t opcode) {cpl(opcode);}});
+    instructions_.push_back({JR_COND_IMM8, [this](std::uint8_t opcode) {jr_cond_imm8(opcode);}});
+    instructions_.push_back({LD_R16MEM_A, [this](std::uint8_t opcode) {ld_r16mem_a(opcode);}});
+    instructions_.push_back({INC_R16, [this](std::uint8_t opcode) {inc_r16(opcode);}});
 }
 
 gmb::CPU::~CPU() {
@@ -81,7 +85,18 @@ std::uint16_t& gmb::CPU::getRegisterR16(std::uint8_t reg) {
         case 0b01: return registers_.DE;
         case 0b10: return registers_.HL;
         case 0b11: return registers_.SP;
-        default: throw InvalidRegisterException(std::format("Could not find a 8 bit register for value {:#b}", reg));
+        default: throw InvalidRegisterException(std::format("Could not find a 16 bit register for value {:#b}", reg));
+    }
+}
+
+gmb::MemByte gmb::CPU::getR16memRegister(std::uint8_t reg) {
+    std::uint16_t old_reg_value = 0;
+    switch (reg) {
+        case 0b00: return mmu_[registers_.BC];
+        case 0b01: return mmu_[registers_.DE];
+        case 0b10: old_reg_value = registers_.HL++; return mmu_[old_reg_value];
+        case 0b11: old_reg_value = registers_.HL--; return mmu_[old_reg_value];
+        default: throw InvalidRegisterException(std::format("Could not find a r16mem register for value {}", reg));
     }
 }
 
@@ -127,4 +142,14 @@ bool gmb::CPU::getFlagH() {
 
 bool gmb::CPU::getFlagC() {
     return static_cast<bool>(registers_.F & 0b00010000);
+}
+
+bool gmb::CPU::isConditionTrue(std::uint8_t condition) {
+    switch (condition) {
+        case 0b00: return !getFlagZ();
+        case 0b01: return getFlagZ();
+        case 0b10: return !getFlagC();
+        case 0b11: return getFlagC();
+        default: throw InvalidConditionException(std::format("Unknown condition {}", condition));
+    }
 }

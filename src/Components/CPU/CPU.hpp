@@ -59,16 +59,23 @@ namespace gmb
             bool getFlagH();
             bool getFlagC();
 
+            bool isConditionTrue(std::uint8_t condition);
+
             MemByte getRegisterR8(std::uint8_t opcode);
             std::uint16_t& getRegisterR16(std::uint8_t opcode);
+            MemByte getR16memRegister(std::uint8_t opcode);
 
             void noop(std::uint8_t opcode);
             void cpl(std::uint8_t opcode);
 
             void jp_imm16(std::uint8_t opcode);
             void jr_imm8(std::uint8_t opcode);
+            void jr_cond_imm8(std::uint8_t opcode);
+
+            void ld_r16mem_a(std::uint8_t opcode);
 
             void ld_r16_imm16(std::uint8_t opcode);
+            void inc_r16(std::uint8_t opcode);
 
             void ld_r8_r8(std::uint8_t opcode);
             void ld_r8_imm8(std::uint8_t opcode);

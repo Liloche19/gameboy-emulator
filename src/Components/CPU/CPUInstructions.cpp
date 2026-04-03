@@ -1,4 +1,5 @@
 #include "./CPU.hpp"
+#include "Data/TByte.hpp"
 #include "Instructions/Instructions.hpp"
 #include <cstdint>
 
@@ -26,6 +27,20 @@ void gmb::CPU::jr_imm8(std::uint8_t opcode) {
     registers_.PC += static_cast<int8_t>(offset) - 2;
 }
 
+void gmb::CPU::jr_cond_imm8(std::uint8_t opcode) {
+    std::uint8_t cond = (opcode ^ JR_COND_IMM8.mask_op) >> 3;
+    if (!isConditionTrue(cond))
+        return;
+    cycles_ += 4;
+    registers_.PC = mmu_[registers_.PC + 1] - static_cast<std::uint8_t>(JR_COND_IMM8.size);
+}
+
+
+void gmb::CPU::ld_r16mem_a(std::uint8_t opcode) {
+    MemByte byte = getR16memRegister((opcode ^ LD_R16MEM_A.mask_op) >> 4);
+    byte = registers_.A;
+}
+
 
 void gmb::CPU::ld_r16_imm16(std::uint8_t opcode) {
     std::uint16_t val = (mmu_[registers_.PC + 1] << 8) | mmu_[registers_.PC + 2];
@@ -33,6 +48,10 @@ void gmb::CPU::ld_r16_imm16(std::uint8_t opcode) {
     getRegisterR16(reg) = val;
 }
 
+void gmb::CPU::inc_r16(std::uint8_t opcode) {
+    std::uint16_t& val = getRegisterR16((opcode ^ INC_R16.mask_op) >> 4);
+    val++;
+}
 
 
 void gmb::CPU::ld_r8_r8(std::uint8_t opcode) {
