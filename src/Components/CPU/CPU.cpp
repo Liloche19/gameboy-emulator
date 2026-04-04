@@ -52,7 +52,7 @@ void gmb::CPU::executeCB(std::uint8_t opcode) {
     auto instruction = std::ranges::find_if(cb_instructions_, [opcode](const auto& p) {
         return (opcode & p.first.mask_arg)  == p.first.mask_op;
     });
-    if (instruction == instructions_.end())
+    if (instruction == cb_instructions_.end())
         throw UnknownInstructionException(std::format("No cb instruction match the opcode: {:#08b} / {:#02X}", opcode, opcode));
     instruction->second(opcode);
     cb_instruction_ = false;
