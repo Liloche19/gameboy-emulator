@@ -85,6 +85,8 @@ namespace gmb
             void inc_r8(std::uint8_t opcode);
             void dec_r8(std::uint8_t opcode);
 
+            void xor_a_r8(std::uint8_t opcode);
+
             Registers registers_{.AF = 0x01B0, .BC = 0x0013, .DE = 0x00D8, .HL = 0x014D, .SP = 0xFFFE, .PC = 0x0100};
             bool cb_instruction_{false};
             std::size_t cycles_{0};

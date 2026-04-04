@@ -48,4 +48,7 @@ namespace gmb
     // inc/dec instructions
     constexpr Instruction INC_R8 = {"INC R8", 4, 1, 0b00000100, 0b11000111};
     constexpr Instruction DEC_R8 = {"DEC R8", 4, 1, 0b00000101, 0b11000111};
+
+    // binary operations
+    constexpr Instruction XOR_A_R8 = {"XOR A R8", 4, 1, 0b10101000, 0b11111000};
 }

@@ -118,3 +118,12 @@ void gmb::CPU::call_imm16(std::uint8_t opcode) {
     mmu_[registers_.SP] = static_cast<std::uint8_t>(next_pc >> 8);
     registers_.PC = address;
 }
+
+void gmb::CPU::xor_a_r8(std::uint8_t opcode) {
+    MemByte byte = getRegisterR8(opcode ^ XOR_A_R8.mask_op);
+    registers_.A ^= byte;
+    setFlagC(false);
+    setFlagH(false);
+    setFlagN(false);
+    setFlagZ(registers_.A == 0);
+}
