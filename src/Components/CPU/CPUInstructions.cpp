@@ -17,106 +17,107 @@ void gmb::CPU::cpl(std::uint8_t opcode) {
 
 void gmb::CPU::jp_imm16(std::uint8_t opcode) {
     (void) opcode;
-    std::uint16_t address = (static_cast<std::uint16_t>(mmu_[registers_.PC + 2]) << 8) | mmu_[registers_.PC + 1];
-    registers_.PC = address - JP_IMM16.size;
+    registers_.PC = getImm16();
+    cycles_ += 4;
 }
 
 void gmb::CPU::jr_imm8(std::uint8_t opcode) {
     (void) opcode;
-    std::uint8_t offset = mmu_[registers_.PC + 1];
-    registers_.PC += static_cast<int8_t>(offset) - 2;
+    std::uint8_t offset = getImm8();
+    registers_.PC += static_cast<std::int8_t>(offset);
+    cycles_ += 4;
 }
 
 void gmb::CPU::jr_cond_imm8(std::uint8_t opcode) {
-    std::uint8_t cond = (opcode ^ JR_COND_IMM8.mask_op) >> 3;
-    if (!isConditionTrue(cond))
+    std::int8_t offset = getImm8();
+    if (!isConditionTrue((opcode ^ JR_COND_IMM8.mask_op) >> 3))
         return;
+    registers_.PC += offset;
     cycles_ += 4;
-    registers_.PC = mmu_[registers_.PC + 1] - static_cast<std::uint8_t>(JR_COND_IMM8.size);
 }
 
 
 void gmb::CPU::ld_r16mem_a(std::uint8_t opcode) {
-    MemByte byte = getR16memRegister((opcode ^ LD_R16MEM_A.mask_op) >> 4);
-    byte = registers_.A;
+    getR16memRegister((opcode ^ LD_R16MEM_A.mask_op) >> 4) = registers_.A;
 }
 
 
 void gmb::CPU::ld_r16_imm16(std::uint8_t opcode) {
-    std::uint16_t val = (static_cast<std::uint16_t>(mmu_[registers_.PC + 2]) << 8) | mmu_[registers_.PC + 1];
-    std::uint8_t reg = (opcode ^ LD_R16_IMM16.mask_op) >> 4;
-    getRegisterR16(reg) = val;
+    std::uint16_t val = getImm16();
+    getRegisterR16((opcode ^ LD_R16_IMM16.mask_op) >> 4) = val;
 }
 
 void gmb::CPU::inc_r16(std::uint8_t opcode) {
     std::uint16_t& val = getRegisterR16((opcode ^ INC_R16.mask_op) >> 4);
     val++;
+    cycles_ += 4;
 }
 
 
 void gmb::CPU::ld_r8_r8(std::uint8_t opcode) {
+    if (opcode == 0x76)
+        return;
     std::uint8_t r_src = (opcode ^ LD_R8_R8.mask_op) & 0b00000111;
     std::uint8_t r_dest = ((opcode ^ LD_R8_R8.mask_op) & 0b00111000) >> 3;
     getRegisterR8(r_dest) = getRegisterR8(r_src);
 }
 
 void gmb::CPU::ld_r8_imm8(std::uint8_t opcode) {
-    std::uint8_t reg = ((opcode ^ LD_R8_IMM8.mask_op) & 0b00111000) >> 3;
-    getRegisterR8(reg) = mmu_[registers_.PC + 1];
-    cycles_ += ADDRESS_ACCESS_CYCLE;
+    getRegisterR8(((opcode ^ LD_R8_IMM8.mask_op) & 0b00111000) >> 3) = getImm8();
 }
 
 void gmb::CPU::sub_a_r8(std::uint8_t opcode) {
-    std::uint8_t reg_code = (opcode ^ SUB_A_R8.mask_op) & 0b00000111;
-    std::uint8_t reg = getRegisterR8(reg_code);
+    MemByte val = getRegisterR8((opcode ^ SUB_A_R8.mask_op) & 0b00000111);
     setFlagN(true);
-    setFlagC(registers_.A < reg);
-    setFlagH((registers_.A & 0x0F) < (reg & 0x0F));
-    registers_.A -= reg;
+    setFlagC(registers_.A < val);
+    setFlagH((registers_.A & 0x0F) < (val & static_cast<std::uint8_t>(0x0F)));
+    registers_.A -= val;
     setFlagZ(registers_.A == 0);
 }
 
 void gmb::CPU::sbc_a_r8(std::uint8_t opcode) {
-    std::uint8_t reg = getRegisterR8((opcode ^ SBC_A_R8.mask_op) & 0b00000111);
+    MemByte val = getRegisterR8((opcode ^ SBC_A_R8.mask_op) & 0b00000111);
     std::uint8_t carry = getFlagC() ? 1 : 0;
     setFlagN(true);
-    setFlagH((registers_.A & 0x0F) < (static_cast<std::uint16_t>(reg & 0x0F) + carry));
-    setFlagC(registers_.A < (static_cast<std::uint16_t>(reg) + carry));
-    registers_.A -= reg + carry;
+    setFlagH((registers_.A & 0x0F) < (static_cast<std::uint16_t>(val & static_cast<std::uint8_t>(0x0F)) + carry));
+    setFlagC(registers_.A < (static_cast<std::uint16_t>(val) + carry));
+    registers_.A -= val + carry;
     setFlagZ(registers_.A == 0);
 }
 
 void gmb::CPU::inc_r8(std::uint8_t opcode) {
     std::uint8_t register_code = (opcode ^ INC_R8.mask_op) >> 3;
+    MemByte val = getRegisterR8(register_code);
+    setFlagH(((val & static_cast<std::uint8_t>(0x0F)) + 1) > 0x0F);
+    val++;
     if (register_code == 0b110)
         cycles_ += ADDRESS_ACCESS_CYCLE;
-    MemByte reg = getRegisterR8(register_code);
-    reg++;
     setFlagN(false);
-    setFlagH((((reg - static_cast<std::uint8_t>(1)) & 0x0F) + 1) > 0x0F);
-    setFlagZ(reg == 0);
+    setFlagZ(val == 0);
 }
 
 void gmb::CPU::dec_r8(std::uint8_t opcode) {
     std::uint8_t register_code = (opcode ^ DEC_R8.mask_op) >> 3;
+    MemByte val = getRegisterR8(register_code);
+    setFlagH((static_cast<std::int16_t>((val & static_cast<std::uint8_t>(0x0F))) - 1) < 0);
+    val--;
     if (register_code == 0b110)
         cycles_ += ADDRESS_ACCESS_CYCLE;
-    MemByte reg = getRegisterR8(register_code);
-    reg--;
     setFlagN(true);
-    setFlagZ(reg == 0);
-    setFlagH((((reg + static_cast<std::uint8_t>(1)) & 0x0F) - 1) < 0);
+    setFlagZ(val == 0);
 }
 
 void gmb::CPU::call_imm16(std::uint8_t opcode) {
     (void) opcode;
-    std::uint16_t address = (static_cast<std::uint16_t>(mmu_[registers_.PC + 2]) << 8) | mmu_[registers_.PC + 1];
-    std::uint16_t next_pc = registers_.PC + CALL_IMM16.size;
+    std::uint16_t address = getImm16();
     registers_.SP--;
-    mmu_[registers_.SP] = static_cast<std::uint8_t>(next_pc & 0xFF);
+    mmu_[registers_.SP] = static_cast<std::uint8_t>(registers_.PC >> 8);
+    cycles_ += ADDRESS_ACCESS_CYCLE;
     registers_.SP--;
-    mmu_[registers_.SP] = static_cast<std::uint8_t>(next_pc >> 8);
+    mmu_[registers_.SP] = static_cast<std::uint8_t>(registers_.PC & 0xFF);
+    cycles_ += ADDRESS_ACCESS_CYCLE;
     registers_.PC = address;
+    cycles_ += ADDRESS_ACCESS_CYCLE;
 }
 
 void gmb::CPU::xor_a_r8(std::uint8_t opcode) {

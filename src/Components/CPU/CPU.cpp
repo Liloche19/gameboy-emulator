@@ -42,14 +42,14 @@ void gmb::CPU::step() {
 }
 
 void gmb::CPU::executeCB(std::uint8_t opcode) {
+    registers_.PC++;
+    cycles_ += ADDRESS_ACCESS_CYCLE;
     auto instruction = std::ranges::find_if(cb_instructions_, [opcode](const auto& p) {
         return (opcode & p.first.mask_arg)  == p.first.mask_op;
     });
     if (instruction == instructions_.end())
         throw UnknownInstructionException(std::format("No cb instruction match the opcode: {:#08b} / {:#02X}", opcode, opcode));
     instruction->second(opcode);
-    registers_.PC += instruction->first.size;
-    cycles_ += instruction->first.cycle;
     cb_instruction_ = false;
     return;
 }
@@ -58,14 +58,14 @@ void gmb::CPU::execute(std::uint8_t opcode) {
     if (cb_instruction_)
         return executeCB(opcode);
 
+    registers_.PC++;
+    cycles_ += ADDRESS_ACCESS_CYCLE;
     auto instruction = std::ranges::find_if(instructions_, [opcode](const auto& p) {
         return (opcode & p.first.mask_arg) == p.first.mask_op;
     });
     if (instruction == instructions_.end())
         throw UnknownInstructionException(std::format("No instruction match the opcode: {:#08b} / {:#02X}", opcode, opcode));
     instruction->second(opcode);
-    registers_.PC += instruction->first.size;
-    cycles_ += instruction->first.cycle;
     return;
 }
 
@@ -95,6 +95,7 @@ std::uint16_t& gmb::CPU::getRegisterR16(std::uint8_t reg) {
 
 gmb::MemByte gmb::CPU::getR16memRegister(std::uint8_t reg) {
     std::uint16_t old_reg_value = 0;
+    cycles_ += ADDRESS_ACCESS_CYCLE;
     switch (reg) {
         case 0b00: return mmu_[registers_.BC];
         case 0b01: return mmu_[registers_.DE];
@@ -102,6 +103,18 @@ gmb::MemByte gmb::CPU::getR16memRegister(std::uint8_t reg) {
         case 0b11: old_reg_value = registers_.HL--; return mmu_[old_reg_value];
         default: throw InvalidRegisterException(std::format("Could not find a r16mem register for value {}", reg));
     }
+}
+
+std::uint8_t gmb::CPU::getImm8() {
+    std::uint8_t byte = mmu_[registers_.PC++];
+    cycles_ += ADDRESS_ACCESS_CYCLE;
+    return byte;
+}
+
+std::uint16_t gmb::CPU::getImm16() {
+    std::uint16_t data = getImm8();
+    data |= getImm8() << 8;
+    return data;
 }
 
 void gmb::CPU::setFlagZ(bool val) {

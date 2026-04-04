@@ -65,8 +65,12 @@ namespace gmb
             std::uint16_t& getRegisterR16(std::uint8_t opcode);
             MemByte getR16memRegister(std::uint8_t opcode);
 
+            std::uint8_t getImm8();
+            std::uint16_t getImm16();
+
             void noop(std::uint8_t opcode);
             void cpl(std::uint8_t opcode);
+
             void call_imm16(std::uint8_t opcode);
 
             void jp_imm16(std::uint8_t opcode);
