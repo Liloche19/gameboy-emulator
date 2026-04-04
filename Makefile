@@ -2,6 +2,7 @@
 MAIN	=	src/main.cpp\
 
 SRCS	=	src/Core/Gameboy.cpp\
+			src/Components/Screen/Screen.cpp\
 			src/Components/MMU/MMU.cpp\
 			src/Components/CPU/CPU.cpp\
 			src/Components/CPU/CPUInstructions.cpp
@@ -13,8 +14,9 @@ OBJ_RELEASE	=	$(SRC:%.cpp=./obj/release/%.o)
 
 # Compilation parameters
 COMPILER	=	g++
-COMPILER_FLAGS_DEBUG	=	-std=c++23 -g -Wall -Wextra -I./src -D_DEV_MODE
-COMPILER_FLAGS_RELEASE	=	-std=c++23 -O3 -march=native -flto=auto -I./src
+COMPILER_COMMON_FLAGS	=	-std=c++23 -I./src -lraylib
+COMPILER_FLAGS_DEBUG	=	$(COMPILER_COMMON_FLAGS) -g -Wall -Wextra -D_DEV_MODE
+COMPILER_FLAGS_RELEASE	=	$(COMPILER_COMMON_FLAGS) -O3 -march=native -flto=auto
 MAKEFLAGS	+=	-j$(shell nproc) --silent --no-print-directory
 
 N_FILES	:=	$(words $(SRC))

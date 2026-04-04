@@ -2,6 +2,7 @@
 
 #include "Components/MMU/MMU.hpp"
 #include "Components/CPU/CPU.hpp"
+#include "Components/Screen/Screen.hpp"
 #include <string>
 
 namespace gmb
@@ -16,9 +17,10 @@ namespace gmb
         private:
             void loadGame(const std::string& filename);
 
-            std::string game_name_{""};
             MMU mmu_;
             CPU cpu_;
+            Screen screen_;
+            std::string game_name_{""};
             bool up_{true};
     };
 }
