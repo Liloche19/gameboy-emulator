@@ -93,6 +93,9 @@ namespace gmb
 
             void xor_a_r8(std::uint8_t opcode);
 
+            void ldh_imm8_a(std::uint8_t opcode);
+            void ldh_a_imm8(std::uint8_t opcode);
+
             enum class IMEStatus {
                 TRUE,
                 FALSE,

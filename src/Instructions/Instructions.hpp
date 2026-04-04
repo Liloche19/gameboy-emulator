@@ -53,4 +53,8 @@ namespace gmb
 
     // binary operations
     constexpr Instruction XOR_A_R8 = {"XOR A R8", 0b10101000, 0b11111000};
+
+    // High RAM instructions
+    constexpr Instruction LDH_IMM8_A = {"LDH IMM8 A", 0b11100000, 0b11111111};
+    constexpr Instruction LDH_A_IMM8 = {"LDH A IMM8", 0b11110000, 0b11111111};
 }

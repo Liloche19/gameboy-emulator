@@ -29,6 +29,8 @@ gmb::CPU::CPU(gmb::MMU& mmu) : mmu_(mmu) {
     instructions_.push_back({XOR_A_R8, [this](std::uint8_t opcode) {xor_a_r8(opcode);}});
     instructions_.push_back({DI, [this](std::uint8_t opcode) {di(opcode);}});
     instructions_.push_back({EI, [this](std::uint8_t opcode) {ei(opcode);}});
+    instructions_.push_back({LDH_IMM8_A, [this](std::uint8_t opcode) {ldh_imm8_a(opcode);}});
+    instructions_.push_back({LDH_A_IMM8, [this](std::uint8_t opcode) {ldh_a_imm8(opcode);}});
 }
 
 gmb::CPU::~CPU() {

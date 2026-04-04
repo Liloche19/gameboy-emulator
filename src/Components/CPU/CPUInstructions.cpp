@@ -138,3 +138,17 @@ void gmb::CPU::xor_a_r8(std::uint8_t opcode) {
     setFlagN(false);
     setFlagZ(registers_.A == 0);
 }
+
+void gmb::CPU::ldh_imm8_a(std::uint8_t opcode) {
+    (void) opcode;
+    std::uint16_t address = 0xFF00 | getImm8();
+    mmu_[address] = registers_.A;
+    cycles_ += ADDRESS_ACCESS_CYCLE;
+}
+
+void gmb::CPU::ldh_a_imm8(std::uint8_t opcode) {
+    (void) opcode;
+    std::uint16_t address = 0xFF00 | getImm8();
+    registers_.A = mmu_[address];
+    cycles_ += ADDRESS_ACCESS_CYCLE;
+}
