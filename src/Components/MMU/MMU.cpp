@@ -1,6 +1,6 @@
 #include "./MMU.hpp"
 #include "Data/MemTypes.hpp"
-#include "Data/TByte.hpp"
+#include "Data/MemByte.hpp"
 #include "Exceptions/Implementations/OutOfRange.hpp"
 #include "Exceptions/Implementations/OpenFile.hpp"
 #include "Exceptions/Implementations/ReadFile.hpp"
@@ -14,7 +14,7 @@ gmb::MMU::MMU() {
 gmb::MMU::~MMU() {
 }
 
-gmb::MemByte gmb::MMU::operator[](std::uint16_t address) {
+gmb::MemByte gmb::MMU::operator[](Address address) {
     if (address > memory_.size())
         throw OutOfRangeException(std::format("Address {:#04X} is out of range!", address));
     return MemByte{TByte<RAMType>{memory_[address]}};

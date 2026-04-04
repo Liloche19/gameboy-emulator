@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Components/MMU/MMU.hpp"
-#include "Data/TByte.hpp"
+#include "Data/MemByte.hpp"
 #include "Instructions/Instructions.hpp"
 #include <cstdint>
 #include <functional>

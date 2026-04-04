@@ -1,7 +1,7 @@
 #include "./CPU.hpp"
 #include "Components/MMU/MMU.hpp"
 #include "Data/MemTypes.hpp"
-#include "Data/TByte.hpp"
+#include "Data/MemByte.hpp"
 #include "Exceptions/Implementations/InvalidRegister.hpp"
 #include "Exceptions/Implementations/UnknownInstruction.hpp"
 #include "Exceptions/Implementations/InvalidCondition.hpp"

@@ -1,5 +1,6 @@
 #include "./CPU.hpp"
-#include "Data/TByte.hpp"
+#include "Components/MMU/MMU.hpp"
+#include "Data/MemByte.hpp"
 #include "Instructions/Instructions.hpp"
 #include <cstdint>
 
@@ -119,7 +120,7 @@ void gmb::CPU::dec_r8(std::uint8_t opcode) {
 
 void gmb::CPU::call_imm16(std::uint8_t opcode) {
     (void) opcode;
-    std::uint16_t address = getImm16();
+    Address address = getImm16();
     registers_.SP--;
     mmu_[registers_.SP] = static_cast<std::uint8_t>(registers_.PC >> 8);
     cycles_ += ADDRESS_ACCESS_CYCLE;
@@ -141,14 +142,14 @@ void gmb::CPU::xor_a_r8(std::uint8_t opcode) {
 
 void gmb::CPU::ldh_imm8_a(std::uint8_t opcode) {
     (void) opcode;
-    std::uint16_t address = 0xFF00 | getImm8();
+    Address address = 0xFF00 | getImm8();
     mmu_[address] = registers_.A;
     cycles_ += ADDRESS_ACCESS_CYCLE;
 }
 
 void gmb::CPU::ldh_a_imm8(std::uint8_t opcode) {
     (void) opcode;
-    std::uint16_t address = 0xFF00 | getImm8();
+    Address address = 0xFF00 | getImm8();
     registers_.A = mmu_[address];
     cycles_ += ADDRESS_ACCESS_CYCLE;
 }
