@@ -25,6 +25,15 @@ void gmb::CPU::ei(std::uint8_t opcode) {
     ime_ = IMEStatus::WAIT;
 }
 
+void gmb::CPU::cp(std::uint8_t opcode) {
+    (void) opcode;
+    std::uint8_t byte = getImm8();
+    setFlagZ(byte == registers_.A);
+    setFlagN(true);
+    setFlagH((registers_.A & 0x0F) < (byte & 0x0F));
+    setFlagC(registers_.A < byte);
+}
+
 
 void gmb::CPU::jp_imm16(std::uint8_t opcode) {
     (void) opcode;

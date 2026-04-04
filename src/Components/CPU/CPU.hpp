@@ -72,6 +72,7 @@ namespace gmb
             void cpl(std::uint8_t opcode);
             void di(std::uint8_t opcode);
             void ei(std::uint8_t opcode);
+            void cp(std::uint8_t opcode);
 
             void call_imm16(std::uint8_t opcode);
 

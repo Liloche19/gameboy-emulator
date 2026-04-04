@@ -19,6 +19,7 @@ namespace gmb
     constexpr Instruction CPL = {"CPL", 0b00101111, 0b11111111};
     constexpr Instruction DI = {"DI", 0b11110011, 0b11111111};
     constexpr Instruction EI = {"EI", 0b11111011, 0b11111111};
+    constexpr Instruction CP = {"CP", 0b11111110, 0b11111111};
 
     // call instructions
     constexpr Instruction CALL_IMM16 = {"CALL IMM16", 0b11001101, 0b11111111};
