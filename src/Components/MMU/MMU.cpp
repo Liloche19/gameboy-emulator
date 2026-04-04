@@ -15,7 +15,7 @@ gmb::MMU::~MMU() {
 }
 
 gmb::MemByte gmb::MMU::operator[](Address address) {
-    if (address > memory_.size())
+    if (address >= memory_.size())
         throw OutOfRangeException(std::format("Address {:#04X} is out of range!", address));
     return MemByte{TByte<RAMType>{memory_[address]}};
 }
