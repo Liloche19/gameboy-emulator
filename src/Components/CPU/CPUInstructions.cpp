@@ -14,6 +14,16 @@ void gmb::CPU::cpl(std::uint8_t opcode) {
     setFlagH(true);
 }
 
+void gmb::CPU::di(std::uint8_t opcode) {
+    (void) opcode;
+    ime_ = IMEStatus::FALSE;
+}
+
+void gmb::CPU::ei(std::uint8_t opcode) {
+    (void) opcode;
+    ime_ = IMEStatus::WAIT;
+}
+
 
 void gmb::CPU::jp_imm16(std::uint8_t opcode) {
     (void) opcode;

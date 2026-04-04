@@ -27,6 +27,8 @@ gmb::CPU::CPU(gmb::MMU& mmu) : mmu_(mmu) {
     instructions_.push_back({INC_R16, [this](std::uint8_t opcode) {inc_r16(opcode);}});
     instructions_.push_back({CALL_IMM16, [this](std::uint8_t opcode) {call_imm16(opcode);}});
     instructions_.push_back({XOR_A_R8, [this](std::uint8_t opcode) {xor_a_r8(opcode);}});
+    instructions_.push_back({DI, [this](std::uint8_t opcode) {di(opcode);}});
+    instructions_.push_back({EI, [this](std::uint8_t opcode) {ei(opcode);}});
 }
 
 gmb::CPU::~CPU() {
@@ -65,7 +67,9 @@ void gmb::CPU::execute(std::uint8_t opcode) {
     });
     if (instruction == instructions_.end())
         throw UnknownInstructionException(std::format("No instruction match the opcode: {:#08b} / {:#02X}", opcode, opcode));
+    IMEStatus next_ime = ime_ == IMEStatus::WAIT ? IMEStatus::TRUE : ime_;
     instruction->second(opcode);
+    ime_ = next_ime;
     return;
 }
 

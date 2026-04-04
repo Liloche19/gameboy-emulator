@@ -17,6 +17,10 @@ namespace gmb
     constexpr Instruction NOOP = {"NOOP", 0b00000000, 0b11111111};
     constexpr Instruction CB = {"CB", 0b11001011, 0b11111111};
     constexpr Instruction CPL = {"CPL", 0b00101111, 0b11111111};
+    constexpr Instruction DI = {"DI", 0b11110011, 0b11111111};
+    constexpr Instruction EI = {"EI", 0b11111011, 0b11111111};
+
+    // call instructions
     constexpr Instruction CALL_IMM16 = {"CALL IMM16", 0b11001101, 0b11111111};
 
     // jump instructions

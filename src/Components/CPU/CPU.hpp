@@ -70,6 +70,8 @@ namespace gmb
 
             void noop(std::uint8_t opcode);
             void cpl(std::uint8_t opcode);
+            void di(std::uint8_t opcode);
+            void ei(std::uint8_t opcode);
 
             void call_imm16(std::uint8_t opcode);
 
@@ -91,7 +93,14 @@ namespace gmb
 
             void xor_a_r8(std::uint8_t opcode);
 
+            enum class IMEStatus {
+                TRUE,
+                FALSE,
+                WAIT,
+            };
+
             Registers registers_{.AF = 0x01B0, .BC = 0x0013, .DE = 0x00D8, .HL = 0x014D, .SP = 0xFFFE, .PC = 0x0100};
+            IMEStatus ime_{IMEStatus::TRUE};
             bool cb_instruction_{false};
             std::size_t cycles_{0};
             MMU& mmu_;
