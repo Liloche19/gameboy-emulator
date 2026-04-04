@@ -15,8 +15,6 @@ namespace gmb
             void run(const std::string& filename);
 
         private:
-            void loadGame(const std::string& filename);
-
             MMU mmu_;
             CPU cpu_;
             Screen screen_;
