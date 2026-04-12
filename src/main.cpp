@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     try {
         gmb::Gameboy gameboy;
         gameboy.run(std::string(argv[1]));
-    } catch (gmb::IException& e) {
+    } catch (const gmb::IException& e) {
         std::cerr << e.what() << std::endl;
         return 1;
     }
