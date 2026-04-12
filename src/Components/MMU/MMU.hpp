@@ -7,8 +7,12 @@
 
 namespace gmb
 {
-    constexpr std::size_t MEMORY_SIZE = UINT16_MAX + 1;
     using Address = std::uint16_t;
+    constexpr std::size_t MEMORY_SIZE = UINT16_MAX + 1;
+
+    constexpr Address GAMENAME_START_ADDRESS = 0x134;
+    constexpr Address GAMENAME_END_ADDRESS = 0x143;
+
 
     class MMU final {
         public:

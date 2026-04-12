@@ -32,5 +32,6 @@ void gmb::MMU::loadGame(const std::string& filename) {
 }
 
 std::string gmb::MMU::getGameName() {
-    return std::string(reinterpret_cast<char*>(std::span(memory_).subspan(0x134, 0x143).data()));
+    auto gamename_zone = std::span(memory_).subspan(GAMENAME_START_ADDRESS, GAMENAME_END_ADDRESS - GAMENAME_START_ADDRESS + 1);
+    return std::string(reinterpret_cast<const char*>(gamename_zone.data()), gamename_zone.size());
 }
