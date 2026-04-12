@@ -25,6 +25,8 @@ void gmb::MMU::loadGame(const std::string& filename) {
     if (!file)
         throw OpenFileException(std::format("Error opening {} file!", filename));
     std::streamsize size = file.tellg();
+    if (static_cast<std::size_t>(size) >= MEMORY_SIZE)
+        throw ReadFileException(std::format("Can't read {} file, it's size is too large!", filename));
     file.seekg(0, std::ios::beg);
     std::uint8_t* mem = &memory_[0];
     if (!file.read(reinterpret_cast<char*>(mem), size))
