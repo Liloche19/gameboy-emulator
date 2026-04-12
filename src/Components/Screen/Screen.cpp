@@ -15,6 +15,7 @@ gmb::Screen::~Screen() {
 void gmb::Screen::tryRefresh() {
     if (GetTime() > next_refresh_time_) {
         drawGame();
+        next_refresh_time_ += TARGET_FRAME_TIME_;
     }
 }
 
