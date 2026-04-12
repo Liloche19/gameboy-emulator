@@ -148,13 +148,15 @@ namespace gmb
         }
 
         // increment / decrement overload
-        MemByte& operator++(int) {
+        std::uint8_t operator++(int) {
+            std::uint8_t old_byte = std::visit([](auto& byte) -> std::uint8_t {return byte;}, data);
             std::visit([](auto& byte) { byte++; }, data);
-            return *this;
+            return old_byte;
         }
-        MemByte& operator--(int) {
+        std::uint8_t operator--(int) {
+            std::uint8_t old_byte = std::visit([](auto& byte) -> std::uint8_t {return byte;}, data);
             std::visit([](auto& byte) { byte--; }, data);
-            return *this;
+            return old_byte;
         }
 
         // binary operation overload
