@@ -58,13 +58,15 @@ namespace gmb
         }
 
         // increment / decrement overload
-        TByte& operator++(int) {
+        std::uint8_t operator++(int) {
+            std::uint8_t old_byte = byte_;
             MemType::write(byte_, byte_ + 1);
-            return *this;
+            return old_byte;
         }
-        TByte& operator--(int) {
+        std::uint8_t operator--(int) {
+            std::uint8_t old_byte = byte_;
             MemType::write(byte_, byte_ - 1);
-            return *this;
+            return old_byte;
         }
 
         // binary operation overload
@@ -149,14 +151,10 @@ namespace gmb
 
         // increment / decrement overload
         std::uint8_t operator++(int) {
-            std::uint8_t old_byte = std::visit([](auto& byte) -> std::uint8_t {return byte;}, data);
-            std::visit([](auto& byte) { byte++; }, data);
-            return old_byte;
+            return std::visit([](auto& byte) -> std::uint8_t { return byte++; }, data);
         }
         std::uint8_t operator--(int) {
-            std::uint8_t old_byte = std::visit([](auto& byte) -> std::uint8_t {return byte;}, data);
-            std::visit([](auto& byte) { byte--; }, data);
-            return old_byte;
+            return std::visit([](auto& byte) -> std::uint8_t { return byte--; }, data);
         }
 
         // binary operation overload
