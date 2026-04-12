@@ -1,7 +1,11 @@
 # Source files
 MAIN	=	src/main.cpp\
 
-SRCS	=
+SRCS	=	src/Core/Gameboy.cpp\
+			src/Components/Screen/Screen.cpp\
+			src/Components/MMU/MMU.cpp\
+			src/Components/CPU/CPU.cpp\
+			src/Components/CPU/CPUInstructions.cpp
 
 SRC	= $(MAIN) $(SRCS)
 
@@ -9,9 +13,14 @@ OBJ_DEBUG	=	$(SRC:%.cpp=./obj/debug/%.o)
 OBJ_RELEASE	=	$(SRC:%.cpp=./obj/release/%.o)
 
 # Compilation parameters
-COMPILER	=	clang++
-COMPILER_FLAGS_DEBUG	=	-std=c++20 -g -Wall -Wextra -I./src
-COMPILER_FLAGS_RELEASE	=	-std=c++20 -O3 -march=native -flto=auto -I./src
+COMPILER	=	g++
+LINKER	=	g++
+LINKER_COMMON_FLAGS	=	-lraylib
+COMPILER_COMMON_FLAGS	=	-std=c++23 -I./src
+COMPILER_FLAGS_DEBUG	=	$(COMPILER_COMMON_FLAGS) -g -Wall -Wextra -D_DEV_MODE
+COMPILER_FLAGS_RELEASE	=	$(COMPILER_COMMON_FLAGS) -O3 -march=native -flto=auto
+LINKER_FLAGS_DEBUG	=	$(LINKER_COMMON_FLAGS) -g
+LINKER_FLAGS_RELEASE	=	$(LINKER_COMMON_FLAGS) -O3 -march=native -flto=auto
 MAKEFLAGS	+=	-j$(shell nproc) --silent --no-print-directory
 
 N_FILES	:=	$(words $(SRC))
@@ -43,7 +52,7 @@ $(NAME):
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Compiling main program...\n"
-	@$(COMPILER) -o $(NAME) $(OBJ_RELEASE) $(COMPILER_FLAGS_RELEASE)
+	@$(LINKER) -o $(NAME) $(OBJ_RELEASE) $(LINKER_FLAGS_RELEASE)
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Main program successfully compiled in release mode!\n"
@@ -61,7 +70,7 @@ dev:
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Compiling main program...\n"
-	@$(COMPILER) -o $(NAME) $(OBJ_DEBUG) $(COMPILER_FLAGS_DEBUG)
+	@$(LINKER) -o $(NAME) $(OBJ_DEBUG) $(LINKER_FLAGS_DEBUG)
 	@echo ""
 	@echo -ne "[$(YELLOW)$(NAME)$(RESET)] "
 	@echo -ne "Main program successfully compiled in debug mode!\n"
@@ -122,15 +131,5 @@ re:
 	@echo -ne "--------------------------------------------\n"
 	@echo ""
 	@make
-
-TEST_SRC	=	$(SRCS)
-
-unit_tests:
-	@make re
-	@clang++ -o unit_tests $(TEST_SRC) $(COMPILER_FLAGS_DEBUG) -lcriterion --coverage
-
-tests_run:
-	@make unit_tests
-	@./unit_tests
 
 .PHONY: all dev clean fclean re

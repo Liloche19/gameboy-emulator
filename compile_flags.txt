@@ -1,2 +1,5 @@
 -I./src
--Wall -Wextra
+-Wall
+-Wextra
+-std=c++23
+-D_DEV_MODE
