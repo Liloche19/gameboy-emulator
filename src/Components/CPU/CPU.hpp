@@ -1,5 +1,6 @@
 #pragma once
 
+#include "./Cycles.hpp"
 #include "Components/MMU/MMU.hpp"
 #include "Data/MemByte.hpp"
 #include "Instructions/Instructions.hpp"
@@ -103,11 +104,11 @@ namespace gmb
                 WAIT,
             };
 
+            MMU& mmu_;
             Registers registers_{.AF = 0x01B0, .BC = 0x0013, .DE = 0x00D8, .HL = 0x014D, .SP = 0xFFFE, .PC = 0x0100};
             IMEStatus ime_{IMEStatus::TRUE};
+            MCycle m_cycles_{0};
             bool cb_instruction_{false};
-            std::size_t cycles_{0};
-            MMU& mmu_;
             std::vector<std::pair<Instruction, std::function<void (std::uint8_t opcode)>>> instructions_;
             std::vector<std::pair<Instruction, std::function<void (std::uint8_t opcode)>>> cb_instructions_;
     };

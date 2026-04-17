@@ -48,7 +48,7 @@ void gmb::CPU::step() {
 
 void gmb::CPU::executeCB(std::uint8_t opcode) {
     registers_.PC++;
-    cycles_ += ADDRESS_ACCESS_CYCLE;
+    m_cycles_++;
     auto instruction = std::ranges::find_if(cb_instructions_, [opcode](const auto& p) {
         return (opcode & p.first.mask_arg)  == p.first.mask_op;
     });
@@ -64,7 +64,7 @@ void gmb::CPU::execute(std::uint8_t opcode) {
         return executeCB(opcode);
 
     registers_.PC++;
-    cycles_ += ADDRESS_ACCESS_CYCLE;
+    m_cycles_++;
     auto instruction = std::ranges::find_if(instructions_, [opcode](const auto& p) {
         return (opcode & p.first.mask_arg) == p.first.mask_op;
     });
@@ -84,7 +84,7 @@ gmb::MemByte gmb::CPU::getRegisterR8(std::uint8_t reg) {
         case 0b011: return MemByte{TByte<RegisterType>{registers_.E}};
         case 0b100: return MemByte{TByte<RegisterType>{registers_.H}};
         case 0b101: return MemByte{TByte<RegisterType>{registers_.L}};
-        case 0b110: cycles_ += ADDRESS_ACCESS_CYCLE; return mmu_[registers_.HL];
+        case 0b110: m_cycles_++; return mmu_[registers_.HL];
         case 0b111: return MemByte{TByte<RegisterType>{registers_.A}};
         default: throw InvalidRegisterException(std::format("Could not find a 8 bit register for value {:#b}", reg));
     }
@@ -102,7 +102,7 @@ std::uint16_t& gmb::CPU::getRegisterR16(std::uint8_t reg) {
 
 gmb::MemByte gmb::CPU::getR16memRegister(std::uint8_t reg) {
     std::uint16_t old_reg_value = 0;
-    cycles_ += ADDRESS_ACCESS_CYCLE;
+    m_cycles_++;
     switch (reg) {
         case 0b00: return mmu_[registers_.BC];
         case 0b01: return mmu_[registers_.DE];
@@ -114,7 +114,7 @@ gmb::MemByte gmb::CPU::getR16memRegister(std::uint8_t reg) {
 
 std::uint8_t gmb::CPU::getImm8() {
     std::uint8_t byte = mmu_[registers_.PC++];
-    cycles_ += ADDRESS_ACCESS_CYCLE;
+    m_cycles_++;
     return byte;
 }
 

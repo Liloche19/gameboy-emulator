@@ -5,7 +5,8 @@ SRCS	=	src/Core/Gameboy.cpp\
 			src/Components/Screen/Screen.cpp\
 			src/Components/MMU/MMU.cpp\
 			src/Components/CPU/CPU.cpp\
-			src/Components/CPU/CPUInstructions.cpp
+			src/Components/CPU/CPUInstructions.cpp\
+			src/Components/CPU/Cycles.cpp
 
 SRC	= $(MAIN) $(SRCS)
 
